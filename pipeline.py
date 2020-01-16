@@ -33,14 +33,12 @@ df.plot(kind='line',y='air_temp',ax=ax)
 plt.show()
 """
 #=======================================
-"""
-times = sorted(df.index.values)
-last_5pct = times[-int(0.05*len(times))]
-print(last_5pct)
-
-validation_df = df[(df.index >= last_5pct)]
-print(validation_df.head, validation_df.tail)
-"""
+def split_validation(data):
+  times = sorted(data.index.values)
+  last_5pct = times[-int(0.05*len(times))]
+  validation_df = data[(df.index >= last_5pct)]
+  main_df = data[(main_df.index < last_5pct)]
+  return main_df, validation_df
 #=======================================
 
 
@@ -71,15 +69,18 @@ def make_sequences(data):
       pred_seq = []
       for n in range(index, index+PREDICT_PERIOD_LEN):
         pred_seq.append(data[TARGET_VAR][n])
-      sequence.append(classify(sequence, pred_seq))
-      sequential_data.append(sequence)
+      #sequence.append(classify(sequence, pred_seq))
+      sequential_data.append([sequence, classify(sequence, pred_seq)])
       sequence = []
       print(index, len(sequential_data))
     sequence.append(i)
     n_seq +=1
-    if len(sequential_data) == 10:
+    if len(sequential_data) == 10: #for testing purposes only
       break
   return sequential_data
 
 
 data = make_sequences(df)
+
+for seq, target in data:
+  print(len(seq), target)
