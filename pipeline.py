@@ -42,14 +42,6 @@ TARGET_VAR = 'air_temp'
 TARGET_INDEX = df.columns.get_loc(TARGET_VAR)
 
 
-def split_validation(data):
-  times = sorted(data.index.values)
-  last_5pct = times[-int(0.05*len(times))]
-  validation_df = data[(data.index >= last_5pct)]
-  main_df = data[(data.index < last_5pct)]
-  return main_df, validation_df
-
-
 def classify(current_seq, future_seq):
   data = []
   for i in current_seq:
@@ -67,18 +59,21 @@ def make_sequences(data):
   n_seq = 0
   index = 0
   for i in data.values:
-    index +=1
-    if (n_seq == SEQ_LEN):
-      n_seq = 0
-      pred_seq = []
-      for n in range(index, index+PREDICT_PERIOD_LEN):
-        pred_seq.append(data[TARGET_VAR][n])
-      sequential_data.append([np.array(sequence), classify(sequence, pred_seq)])
-      sequence = []
-    sequence.append(i)
-    n_seq +=1
-    if len(sequential_data) == 10: #for testing
-      break
+    try:
+      index +=1
+      if (n_seq == SEQ_LEN):
+        n_seq = 0
+        pred_seq = []
+        for n in range(index, index+PREDICT_PERIOD_LEN):
+          pred_seq.append(data[TARGET_VAR][n])
+        sequential_data.append([np.array(sequence), classify(sequence, pred_seq)])
+        sequence = []
+        if (index-1)%6000 == 0:
+          print(index)
+      sequence.append(i)
+      n_seq +=1
+    except Exception as e:
+      print(e)
   return sequential_data
 
 
@@ -86,10 +81,14 @@ def balance(data):
   class_0 = []
   class_1 = []
   for seq, target in data:
-    if target == 0:
-      class_0.append([seq, target])
-    elif target == 1:
-      class_1.append([seq, target])
+    try:
+      if target == 0:
+        class_0.append([seq, target])
+      elif target == 1:
+        class_1.append([seq, target])
+    except Exception as e:
+      print(e)
+
   random.shuffle(class_0)
   random.shuffle(class_1)
   lower = min(len(class_0), len(class_1))
@@ -114,22 +113,18 @@ def normalize(data):
   return normalized
 
 
+def preprocess_and_save(data, filename):
+  df = make_sequences(data)
+  x, y = balance(df)
+  x = normalize(x)
+  save(f'{filename}_x', x)
+  save(f'{filename}_y', y)
+  print(f"{filename} length: {len(x)}")
+  print(f"negatives: {y.count(0)}, positives: {y.count(1)}")
+
 #===============================================================================
-main_df, validation_df = split_validation(df)
+train, val, test = np.split(df.sample(frac=1), [int(.6*len(df)), int(.8*len(df))])
 
-main_df = make_sequences(main_df)
-train_x, train_y = balance(main_df)
-train_x = normalize(train_x)
-
-validation_df = make_sequences(validation_df)
-test_x, test_y = balance(validation_df)
-test_x = normalize(test_x)
-
-save('train_x.npy',train_x)
-save('train_y.npy', train_y)
-save('test_x.npy', test_x)
-save('test_y.npy', test_y)
-
-print(f"train data: {len(train_x)} validation: {len(test_x)}")
-print(f"Negatives: {train_y.count(0)}, positives: {train_y.count(1)}")
-print(f"VALIDATION negatives: {test_y.count(0)}, positives: {test_y.count(1)}")
+preprocess_and_save(train, 'train')
+preprocess_and_save(val, 'val')
+preprocess_and_save(test, 'test')
