@@ -3,6 +3,7 @@ import numpy as np
 import random
 import matplotlib.pyplot as plt
 from sklearn import preprocessing
+from numpy import save
 
 #read data and remove unnecessary variables
 
@@ -76,6 +77,8 @@ def make_sequences(data):
       sequence = []
     sequence.append(i)
     n_seq +=1
+    if len(sequential_data) == 10: #for testing
+      break
   return sequential_data
 
 
@@ -121,6 +124,11 @@ train_x = normalize(train_x)
 validation_df = make_sequences(validation_df)
 test_x, test_y = balance(validation_df)
 test_x = normalize(test_x)
+
+save('train_x.npy',train_x)
+save('train_y.npy', train_y)
+save('test_x.npy', test_x)
+save('test_y.npy', test_y)
 
 print(f"train data: {len(train_x)} validation: {len(test_x)}")
 print(f"Negatives: {train_y.count(0)}, positives: {train_y.count(1)}")
