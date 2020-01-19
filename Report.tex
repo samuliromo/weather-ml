@@ -47,7 +47,7 @@
 
     \begin{figure}[h!]
       \begin{center}
-        \includegraphics[width=0.5\linewidth]{img/Recurrent.jpeg}
+        \includegraphics[width=0.8\linewidth]{img/Recurrent.jpeg}
         \caption{Recurrent Neural Network.}
         \label{fig:snn}
       \end{center}
@@ -61,7 +61,32 @@
     When it comes to training a recurrent net,  GPUs are an obvious choice over an ordinary  CPU. This was validated by a research team  at Indico, which uses these nets on text processing  tasks like sentiment analysis and helpfulness  extraction. The team found that GPUs were  able to train the nets 250 times faster! That’s  the difference between one day of training,  and over eight months!  So under what circumstances would you use  a recurrent net over a feedforward net? We  know that a feedforward net outputs one value,  which in many cases was a class or a prediction.  A recurrent net is suited for time series  data, where an output can be the next value  in a sequence, or the next several values.  So the answer depends on whether the application  calls for classification, regression, or forecasting.
 
     \newpage
-    \section{CNN vs RNN Comparison in time series applications}
-    Although CNNs and RNNs are both neural networks and can process some of the same input types, they are structured differently and applied for different purposes.
+    \section{Time series problem}
+    \paragraph{}
+    In order of increasing complexity we can think of time series data as a sequence of data points that measure the same thing over an ordered period of time. Another way of thinking about it, is that it's a series of numeric values, each with its own timestamp defined by a name and a set of label dimensions.
+    \paragraph{} 
+    We're seeing this type of data set become more common, in fact if we look at developer usage patterns in the past two years time series databases have emerged as the fastest growing category of databases.
+    
+    
+    
+    \paragraph{}
+    Time series forecasting is performed in nearly every organization that works with quantifiable data. Retail stores forecast sales. Energy companies forecast reserves, production, demand, and prices. Educational institutions forecast enrollment. Goverments forecast tax receipts and spending. International financial organizations forecast inflation and economic activity. The list is long but the point is short - forecasting is a fundamental analytic process in every organization. The purpose of this example is to help with visualization of a Time Series Graph of an airline Company.
+    \begin{figure}[h!]
+      \begin{center}
+        \includegraphics[width=0.8\linewidth]{img/unnamed-chunk-6-1.png}
+        \caption{TimeSeries Data Example.}
+        \label{fig:snn}
+      \end{center}
+    \end{figure}
+
+
+
+    \paragraph{} 
+    Well smart homes monitor data points like the temperature, number of people in the house and energy usage,  Amazon monitors how its many assets are moving across the world with a fine-grained level of precision and efficiency that makes same-day delivery possible. All of these applications have one thing in common, they rely on a form of data that measures how things change over time. 
+    \paragraph{}
+    Usually time series data sets have three commonalities. The data that does arrive is recorded as a new entry, it arrives in time order and time is a primary axis. These data sets are generally append-only the data that has been reported doesn't change. Since it was recorded at some point in the past, time series data sets are different than just having a time field as a column in a data set. In that, when we collect a new data point for time series data we have to create a brand new row for it. Only by doing this will we be able to track all changes to a system over time.  Recording data points over a series of time allows us to analyze how something has changed in the past monitor, how is changing in the presence and even predict how it could change in the future.
+    \paragraph{} 
+    Recurrent neural networks are able to learn how to make predictions in sequences of data and a variance of recurrent networks called long-short term memory networks are able to learn from even longer sequences of data. We can treat our data set as a supervised problem if we'd like and use an LS TM network to predict our target.
+
 
 \end{document}
