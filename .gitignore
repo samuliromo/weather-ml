@@ -1,2 +1,11 @@
 *.csv
 *.npy
+*.aux
+*.fls
+*.lof
+*.log
+*.lot
+*.toc
+*.fdb_latexmk
+*.synctex.gz
+.DS_Store
