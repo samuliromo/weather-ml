@@ -23,21 +23,88 @@
   A Convolutional Neural Network also known as a CNN or COMV NET is an artificial neural network that is so far been most popularly used for analyzing images. Although image analysis has been the most widespread use of CNN's they can also be used for other data analysis or classification problems as well most generally.
   \subsection{How does it Work}
     \paragraph{}
-    We can think of a CNN as an artificial neural network that has some type of specialization for being able to pick out or detect patterns and make sense of them. This pattern detection is what makes CNN so useful for image analysis so if a CNN is just some form  neural network what differentiates it from just a standard multi-layer perceptron or MLP well  these layers are precisely what makes a CNN a CNN.
+    The idea behind a convolutional neural network is that you filter the images before training the deep neural network. After filtering the images, features within the images could then come to the forefront and you would then spot those features to identify something.
+    A filter is simply a set of multipliers. 
+    \vspace{20mm}
     \begin{figure}[h!]
       \begin{center}
-        \includegraphics[width=0.7\linewidth]{img/Visualization-of-a-traditional-fully-connected-neural-network-Stanford-University.png}
-        \caption{Simple Representation.}
+        \includegraphics[width=\linewidth]{img/img2.png}
+        \caption{Object image}
         \label{fig:snn}
       \end{center}
     \end{figure}
     \paragraph{}
-    CNN's can and usually do have other non convolutional layers as well but the basis of a CNN is the convolutional layers all right so what do these convolutional layers do just like any other layer a convolutional layer receives input then transforms the input in some way and then outputs the transform input to the next layer with a convolutional layer this transformation is a convolution operation.
+    So, for example, in this case, if you're looking at a particular pixel that has the value 192 and the filter is the values in the red box then you multiply 192 by 4.5, and each of its neighbors by the respective filter value. So it`s neighbor above and to the left is 0, so you multiply that by -1. Its upper neighbor is 64 so you multiply that by 0 and so on. Sum up the result and you get the new value for the pixel.
+    \begin{figure}
+      \centering
+      \begin{minipage}{.5\textwidth}
+        \centering
+        \includegraphics[width=0.9\linewidth]{img/h-line.png}
+        \caption{Horzontal line filter}
+        \label{fig:test1}
+      \end{minipage}%
+      \begin{minipage}{.5\textwidth}
+        \centering
+        \includegraphics[width=0.9\linewidth]{img/v-line.png}
+        \caption{Vertical line filter}
+        \label{fig:test2}
+      \end{minipage}
+    \end{figure}
     \paragraph{}
-    Most generally we can think of a CNN as an artificial neural network that has some type of specialization for being able to pick out or detect patterns and make sense of them. This pattern detection is what makes CNN so useful for image analysis.So if a CNN is just some form of an artificial neural network what differentiates it from just a standard multi-layer perceptron or MLP?
-    \paragraph{} 
-    Well a CNN has hidden layers called convolutional layers and these layers are precisely what makes a CNN well a CNN. Now CNN's can and usually do have other non convolutional layers as well but the basis of a CNN is the convolutional layers.
-    \vspace{20mm}
+    Now this might seem a little odd but checkout the results for some filters like this one, that when multiplied over the contents of the image, it removes almost everything except the vertical lines. And this one that removes almost everything except the horizontal lines.
+    \vspace{10mm}
+    \begin{figure}[h!]
+      \begin{center}
+        \includegraphics[width=0.7\linewidth]{img/comp.png}
+        \caption{Combination Max Pooling}
+        \label{fig:snn}
+      \end{center}
+    \end{figure}
+    \paragraph{}
+    This can then be combined with something called pooling, witch. groups up pixels in the image and filters them down to a subset. So for example max pooling 2x2 will group the image into sets of 2x2 pixels and simply pick the largest. the image will be reduced into a quarter of its original size but the features can still be maintained. 
+    \vspace{40mm}
+    \begin{figure}[h!]
+      \begin{center}
+        \includegraphics[width=0.7\linewidth]{img/maxpool.png}
+        \caption{Max Pooling}
+        \label{fig:snn}
+      \end{center}
+    \end{figure}
+    \paragraph{}
+    So the previous image after being filtered and then max pooled could look like this. The image on the right is one quarter of the one on the left, but the vertical line features where maintained and indeed they where enhanced.
+
+    \vspace{10mm}
+    \begin{figure}[h!]
+      \begin{center}
+        \includegraphics[width=0.7\linewidth]{img/features.png}
+        \caption{Features}
+        \label{fig:snn}
+      \end{center}
+    \end{figure}
+    \paragraph{}
+    So where did these filters come from? Thats the magic of a convolutional neural network. They`re actually learned. They are just parameters like those on the neurons of a neural network. So as our image is feed into the convolutional layer, a number of randomly initialized filters will pass over the image. The results of these are fed into the next layer and matching is performed by the neural network. And overtime the filters that gave us the image outputs that give the best matches will be learned and the process is called feature extraction. 
+    \vspace{10mm}
+    \begin{figure}[h!]
+      \includegraphics[width=0.4\linewidth]{img/code.png}
+      \caption{Code}
+      \label{fig:snn}
+    \end{figure}
+    \paragraph{}
+    Now,lets take a look at the code to build a convolutional network like this. We have a flattened input that`s fed into a dense layer that intern is fed into the final dense layer that is our output. Notice we haven`t specified the input shape. That`s because i will put a concolutional layer on top of it like this. This layer takes the input so we specify the input shape, and we. are telling it to generate 64 filters with this parameter.
+    \vspace{10mm}
+    \begin{figure}[h!]
+      \includegraphics[width=0.4\linewidth]{img/code-stack.png}
+      \caption{Code Stack}
+      \label{fig:snn}
+    \end{figure}
+    \paragraph{}
+    That is, it will generate 64 filters and multiply each of them across the image, than each epoch will figure out which filters gave the best signals to help match the images to their labels in much the same way it learned which parameters worked best in the dense layer. The max pooling to compress the image and enhance the features looks like this, and we can stack convolutional layer on top of each other to really break down the image and try to learn from very abstract features like this.
+    \paragraph{}
+    With this methodology your network starts to learn based on the features of the image instead of just the row patterns of pixels. Two sleeves, it`s a shirt. Two short sleeves, it`s a t-shirt. Sole and laces, it`s a shoe ets. Now we are still looking at just the simple images of fashion but the principles into more complex images. 
+
+
+
+  \newpage
   \section{Recurrent Neural Network}
   Recurrent neural networks are learning model with a simple structure  and a built-in feedback loop, allowing it  to act as a forecasting engine. 
   Recurrent neural networks, or RNNs, have  a long history, but their recent popularity  is mostly due to the works of Juergen Schmidhuber,  Sepp Hochreiter, and Alex Graves. Their applications  are extremely versatile, ranging from speech  recognition to driverless cars.
