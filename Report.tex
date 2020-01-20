@@ -3,6 +3,8 @@
 \usepackage[english]{babel}
 \usepackage{graphicx}
 
+\usepackage{hyperref}
+
 \usepackage{xcolor}
 
 \title{Report}
@@ -15,8 +17,6 @@
   \tableofcontents
   \newpage
   \listoffigures
-  \newpage
-  \listoftables
 
   \newpage
   \section{Convolutional Neural Network}
@@ -145,8 +145,8 @@
     \subsubsection{Gpu vs Cpu}
     When it comes to training a recurrent net, GPUs are an obvious choice over an ordinary CPU. This was validated by a research team at Indico, which uses these nets on text processing tasks like sentiment analysis and helpfulness extraction. The team found that GPUs were able to train the nets 250 times faster! That’s the difference between one day of training, and over eight months! So under what circumstances would you use a recurrent net over a feedforward net? We know that a feedforward net outputs one value, which in many cases was a class or a prediction. A recurrent net is suited for time series data, where an output can be the next value in a sequence, or the next several values. So the answer depends on whether the application calls for classification, regression, or forecasting.
 
-    \newpage
-    \section{Time series Data}
+  \newpage
+  \section{Time series Data}
     \paragraph{}
     In order of increasing complexity we can think of time series data as a sequence of data points that measure the same thing over an ordered period of time. Another way of thinking about it, is that it's a series of numeric values, each with its own timestamp defined by a name and a set of label dimensions.
     \paragraph{} 
@@ -164,8 +164,6 @@
       \end{center}
     \end{figure}
 
-
-
     \paragraph{} 
     Well smart homes monitor data points like the temperature, number of people in the house and energy usage, Amazon monitors how its many assets are moving across the world with a fine-grained level of precision and efficiency that makes same-day delivery possible. All of these applications have one thing in common, they rely on a form of data that measures how things change over time. 
     \paragraph{}
@@ -173,5 +171,92 @@
     \paragraph{} 
     Recurrent neural networks are able to learn how to make predictions in sequences of data and a variance of recurrent networks called long-short term memory networks are able to learn from even longer sequences of data. We can treat our data set as a supervised problem if we'd like and use an LS TM network to predict our target.
 
+\vspace{30mm}
+\section{Convolutional and Recurrent neural networks applied to sequential data}
+When it comes to neural networks architectures, recurrent neural networks have traditionally been the go-to method for working with sequential data, such as text, speech, audio, video, etc. Usually convolutional neural networks are not even considered for these tasks. In recent years, however, there has been an increasing amount of research and practical applications utilizing convolutional neural networks for sequence analysis and prediction.
+  \paragraph{}
+  Bai, Kolter and Koltun (2018) [Bai, S., Kolter, J. Z., \& Koltun, V. (2018). An empirical evaluation of generic convolutional and recurrent networks for sequence modeling. arXiv preprint arXiv:1803.01271.] did extensive testing and comparison between state-of-the-art LSTM and GRU architectures, and a convolutional neural network in a wide variety of different classification tasks and datasets. They found out that the convolutional architecture substantially outperformed both recurrent architectures in all of the tasks. RNN:s are often regarded as well-suited for sequential data particularly because of their ability to retain temporal information. However, the convolutional neural network was able to retain information with 100 \% accuracy across all sequence lengths, while both of the recurrent networks quickly degenerated into random guessing.
+  \begin{figure}[h!]
+    \begin{center}
+      \includegraphics[width=0.8\linewidth]{img/image5.png}
+      \caption{Accurrancy Graph.}
+      \label{fig:snn}
+    \end{center}
+  \end{figure}
+  \paragraph{}
+  In a 2018 paper (Borovykh, A., Bohte, S., \& Oosterlee, C. W. (2018). Dilated convolutional neural networks for time series forecasting. Journal of Computational Finance, Forthcoming.) Convolutional neural network based on Google’s wavenet architecture was compared to LSTM in predicting financial data, which is noisy, chaotic, and very hard to make predictions from. The CNN architecture was more successful in finding underlying patterns from the data and was less susceptible to overfitting. Recurrent networks are also more complex and computationally demanding, which is a big downside in production environments.
+  \newpage
+  \section{Practical example}
+  I our practical example we compared the performance of convolutional and recurrent neural networks, specifically the LSTM (long-short-term memory) variant of the recurrent neural network, which is supposed to address the issue of vanishing gradients present in regular RNN:s. We used a 1-dimensional convolutional neural network, which is more optimized for sequence and time series analysis, as opposed to the 2d CNN, which is more commonly used for image analysis and recognition related tasks. Both models were implemented in Python with the Keras library, using Tensorflow backend. Pandas, Numpy and Scikit Learn were also used in building the data pipeline. 
+  \paragraph{}
+  The data we used for the task was a weather dataset \href{https://www.kaggle.com/ktochylin/san-diego-every-minute-weather-indicators-201114}{(here)} collected from San Diego between 2011 and 2014 in one minute intervals, and it included indicators such as temperature, air pressure, humidity, wind speed, and others. In hindsight, this was probably not the best kind of dataset to use for benchmarking purposes, and the models we came up with certainly would not be useful for any kind of “real” analysis tasks. However, it was suitable for learning purposes. More useful results could probably have been obtained by combining this dataset with something else, like energy consumption.
+  \paragraph{}
+  We started by cleaning up the data by removing all of the NaN-values, setting datetime as index and discarding redundant and useless variables. To decide which variables to use, we first looked at the correlation matrix:
+
+  \begin{figure}[h!]
+    \begin{center}
+      \includegraphics[width=\linewidth]{img/image3.png}
+      \caption{Correlation Matrix.}
+      \label{fig:snn}
+    \end{center}
+  \end{figure}
+  You can immediately see that rain accumulation and duration, for example, are very closely correlated, which makes intuitive sense. Also, things like maximum wind speed and average wind direction seemed to be almost 1:1 correlated. After some consideration we settled on these variables:
+
+  \begin{figure}[h!]
+    \begin{center}
+      \includegraphics[width=\linewidth]{img/image2.png}
+      \caption{Correlation Matrix with our variables.}
+      \label{fig:snn}
+    \end{center}
+  \end{figure}
+  Here is a graph of air temperature over the whole dataset:
+  \begin{figure}[h!]
+    \begin{center}
+      \includegraphics[width=\linewidth]{img/image6.png}
+      \caption{Air Temperature Graph.}
+      \label{fig:snn}
+    \end{center}
+  \end{figure}
+  As for the prediction/classification task itself, we decided to try to predict if the average temperature for an arbitrarily long time interval in the future (60 minutes in our case) would go up or down, based on the weather activity from another arbitrarily long sequence (also 60 minutes in our case). In addition to the dataset itself probably not being optimal for the task, some other target variable and sequence lengths could probably have yielded better results. Our pipeline was built to be able to make sequences of any length, but we ended up not using any other values, because building of the sequences took too long with our hardware. The code could have probably been better optimized.
+  \paragraph{}
+  Before building the sequences, we split the whole dataset into training / validation / testing data, with a ratio of 60/20/20. Although we ended up only using the training and validation sets. After building the sequences we balanced the data, so for the training there would be equal number of instances from both classes. After that we normalized the data using sklearn.preprocessing.MinMaxScaler(). At the end of the pipeline we saved all datasets as numpy binary format for efficient storage to be used in our training pipelines.
+  \paragraph{}
+  The code for the balancing method in the data preprocessing pipeline was taken from \href{https://pythonprogramming.net/balancing-rnn-data-deep-learning-python-tensorflow-keras/}{here}
+  \paragraph{}
+  The code for the training itself was mostly trivial with both the CNN and RNN. We tried to make the architecture relatively simple, with 2 convolutional layers for the CNN and 2 LSTM layers for the RNN. Both had a flatten layer and 2 fully connected layers at the end. The loss function we used was binary crossentropy, because the task was binary classification, and the activation function used in the final layer was sigmoid, because it works with binary classification, as opposed to something like softmax, which is better for multi-class problems. We also added dropouts to each layer, which is a method used to reduce overfitting and improve model robustness by randomly dropping some amount of connections between neurons. Supposedly it’s not that widely used in research anymore.
+  We ended up not doing much of hyperparameter optimization at all, at least not systematically, mostly because of time constraints. The comparison metrics used were accuracy and training time.
+  \paragraph{}
+  From the results we can see that the convolutional neural network performed much better, with both higher accuracy and lower loss. Training was also substantially lower. For some reason after few epochs, the LSTM got stuck at 50\% accuracy, even after adjusting several parameters. We suspect there might be a mistake in the code.
+  \paragraph{}
+  Training results for CNN:
+  \begin{figure}[h!]
+    \begin{center}
+      \includegraphics[width=\linewidth]{img/image4.png}
+      \caption{CNN Results.}
+      \label{fig:snn}
+    \end{center}
+  \end{figure}
+  And LSTM:
+  \begin{figure}[h!]
+    \begin{center}
+      \includegraphics[width=\linewidth]{img/image1.png}
+      \caption{LSTM Results.}
+      \label{fig:snn}
+    \end{center}
+  \end{figure}
+
+  \newpage
+  \section{References}
+  \href{http://www.cs.cmu.edu/~bhiksha/courses/deeplearning/Fall.2016/pdfs/Simard.pdf}{(1)Best practices for convolutional neural networks applied to visual document analysis, by:PY Simard, D Steinkraus, JC Platt - Icdar, 2003.}
+  \newline
+  \href{https://www.isca-speech.org/archive/interspeech_2010/i10_1045.html}{(2)Recurrent neural network based language model, by:T Mikolov, M Karafiát, L Burget, J Černocký, 2010}
+  \newline
+  \href{https://link.springer.com/chapter/10.1007/BFb0020283}{(3)Predicting time series with support vector machines, by: KR Müller, AJ Smola, G Rätsch, B Schölkopf, 1997}
+  \newline
+  \href{https://pythonprogramming.net/balancing-rnn-data-deep-learning-python-tensorflow-keras/}{(4)Balancing Recurrent Neural Network sequence data for our crypto predicting RNN - Deep Learning basics with Python, TensorFlow and Keras, by: SantDex}
+  \newline
+  \href{https://www.cv-foundation.org/openaccess/content_cvpr_2016/papers/Wang_CNN-RNN_A_Unified_CVPR_2016_paper.pdf}{(5)CNN-RNN: A Unified Framework for Multi-label Image Classification, by: Jiang Wang, Yi Yang, Junhua Mao, 2016}
+
+  
 
 \end{document}
