@@ -13,11 +13,8 @@ df.drop(['rowID', 'avg_wind_direction', 'max_wind_direction', 'min_wind_directio
 df.dropna(inplace=True)
 df['time'] = pd.to_datetime(df['time'])
 df.set_index('time', inplace=True)
-#print(df.info())
-#print(df.head())
 
 
-"""
 #show the correlation matrix
 f = plt.figure(figsize=(19, 15))
 plt.matshow(df.corr(), fignum=f.number)
@@ -25,15 +22,14 @@ plt.xticks(range(df.shape[1]), df.columns, fontsize=14, rotation=90)
 plt.yticks(range(df.shape[1]), df.columns, fontsize=14)
 cb = plt.colorbar()
 cb.ax.tick_params(labelsize=14)
-#plt.show()
-"""
+plt.show()
+
 
 #graph temperature over time
-"""
 ax = plt.gca()
 df.plot(kind='line',y='air_temp',ax=ax)
-plt.show()
-"""
+#plt.show()
+
 #============================================================
 
 SEQ_LEN = 60
