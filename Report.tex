@@ -1,0 +1,177 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{graphicx}
+
+\usepackage{xcolor}
+
+\title{Report}
+\author{Egirin Gega \&  Samuli Romo}
+
+\begin{document}
+  \maketitle
+
+  \newpage
+  \tableofcontents
+  \newpage
+  \listoffigures
+  \newpage
+  \listoftables
+
+  \newpage
+  \section{Convolutional Neural Network}
+  A Convolutional Neural Network also known as a CNN or COMV NET is an artificial neural network that is so far been most popularly used for analyzing images. Although image analysis has been the most widespread use of CNN's they can also be used for other data analysis or classification problems as well most generally.
+  \subsection{How does it Work}
+    \subsubsection{Filters}
+    The idea behind a convolutional neural network is that you filter the images before training the deep neural network. After filtering the images, features within the images could then come to the forefront and you would then spot those features to identify something.
+    A filter is simply a set of multipliers. 
+    \vspace{20mm}
+    \begin{figure}[h!]
+      \begin{center}
+        \includegraphics[width=\linewidth]{img/img2.png}
+        \caption{Object image}
+        \label{fig:snn}
+      \end{center}
+    \end{figure}
+    \paragraph{}
+    So, for example, in this case, if you're looking at a particular pixel that has the value 192 and the filter is the values in the red box then you multiply 192 by 4.5, and each of its neighbors by the respective filter value. So it`s neighbor above and to the left is 0, so you multiply that by -1. Its upper neighbor is 64 so you multiply that by 0 and so on. Sum up the result and you get the new value for the pixel.
+    \begin{figure}
+      \centering
+      \begin{minipage}{.5\textwidth}
+        \centering
+        \includegraphics[width=0.9\linewidth]{img/h-line.png}
+        \caption{Horzontal line filter}
+        \label{fig:test1}
+      \end{minipage}%
+      \begin{minipage}{.5\textwidth}
+        \centering
+        \includegraphics[width=0.9\linewidth]{img/v-line.png}
+        \caption{Vertical line filter}
+        \label{fig:test2}
+      \end{minipage}
+    \end{figure}
+    \paragraph{}
+    Now this might seem a little odd but checkout the results for some filters like this one, that when multiplied over the contents of the image, it removes almost everything except the vertical lines. And this one that removes almost everything except the horizontal lines.
+    \vspace{10mm}
+    \begin{figure}[h!]
+      \begin{center}
+        \includegraphics[width=0.7\linewidth]{img/comp.png}
+        \caption{Combination Max Pooling}
+        \label{fig:snn}
+      \end{center}
+    \end{figure}
+    \subsubsection{Max Pooling}
+    This can then be combined with something called pooling, witch. groups up pixels in the image and filters them down to a subset. So for example max pooling 2x2 will group the image into sets of 2x2 pixels and simply pick the largest. the image will be reduced into a quarter of its original size but the features can still be maintained. 
+    \vspace{40mm}
+    \begin{figure}[h!]
+      \begin{center}
+        \includegraphics[width=0.7\linewidth]{img/maxpool.png}
+        \caption{Max Pooling}
+        \label{fig:snn}
+      \end{center}
+    \end{figure}
+    \paragraph{}
+    So the previous image after being filtered and then max pooled could look like this. The image on the right is one quarter of the one on the left, but the vertical line features where maintained and indeed they where enhanced.
+
+    \vspace{10mm}
+    \begin{figure}[h!]
+      \begin{center}
+        \includegraphics[width=0.7\linewidth]{img/features.png}
+        \caption{Features}
+        \label{fig:snn}
+      \end{center}
+    \end{figure}
+    \subsubsection{Code sample}
+    So where did these filters come from? Thats the magic of a convolutional neural network. They`re actually learned. They are just parameters like those on the neurons of a neural network. So as our image is feed into the convolutional layer, a number of randomly initialized filters will pass over the image. The results of these are fed into the next layer and matching is performed by the neural network. And overtime the filters that gave us the image outputs that give the best matches will be learned and the process is called feature extraction. 
+    \vspace{10mm}
+    \begin{figure}[h!]
+      \includegraphics[width=0.4\linewidth]{img/code.png}
+      \caption{Code}
+      \label{fig:snn}
+    \end{figure}
+    \paragraph{}
+    Now,lets take a look at the code to build a convolutional network like this. We have a flattened input that`s fed into a dense layer that intern is fed into the final dense layer that is our output. Notice we haven`t specified the input shape. That`s because i will put a concolutional layer on top of it like this. This layer takes the input so we specify the input shape, and we. are telling it to generate 64 filters with this parameter.
+    \vspace{10mm}
+    \begin{figure}[h!]
+      \includegraphics[width=0.4\linewidth]{img/code-stack.png}
+      \caption{Code Stack}
+      \label{fig:snn}
+    \end{figure}
+    \paragraph{}
+    That is, it will generate 64 filters and multiply each of them across the image, than each epoch will figure out which filters gave the best signals to help match the images to their labels in much the same way it learned which parameters worked best in the dense layer. The max pooling to compress the image and enhance the features looks like this, and we can stack convolutional layer on top of each other to really break down the image and try to learn from very abstract features like this.
+    \paragraph{}
+    With this methodology your network starts to learn based on the features of the image instead of just the row patterns of pixels. Two sleeves, it`s a shirt. Two short sleeves, it`s a t-shirt. Sole and laces, it`s a shoe ets. Now we are still looking at just the simple images of fashion but the principles into more complex images. 
+
+
+
+  \newpage
+  \section{Recurrent Neural Network}
+  Recurrent neural networks are learning model with a simple structure and a built-in feedback loop, allowing it to act as a forecasting engine. 
+  Recurrent neural networks, or RNNs, have a long history, but their recent popularity is mostly due to the works of Juergen Schmidhuber,  Sepp Hochreiter, and Alex Graves. Their applications are extremely versatile, ranging from speech recognition to driverless cars.
+  \subsection{How does it Work}
+    \paragraph{}
+    All the nets we’ve seen up to this point have been feedforward neural networks. In a feedforward neural network, signals flow in only one direction from input to output, one layer at a time. In a recurrent net, the output of a layer is added to the next input and fed back into the same layer, which is typically the only layer in the entire network. You can think of this process as a passage through time – shown here are 4 such time steps. At t = 1, the net takes the output of time t = 0 and sends it back into the net along with the next input. The net repeats this for t = 2, t = 3, and so on. Unlike feedforward nets, a recurrent net can receive a sequence of values as input, and it can also produce a sequence of values as output. The ability to operate with sequences opens up these nets to a wide variety of applications.
+
+    \begin{figure}[h!]
+      \begin{center}
+        \includegraphics[width=0.8\linewidth]{img/Recurrent.jpeg}
+        \caption{Recurrent Neural Network.}
+        \label{fig:snn}
+      \end{center}
+    \end{figure}
+    
+    \paragraph{}
+    Here are a few examples. When the input is singular and the output is a sequence, a potential application is image captioning. A sequence of inputs with a single output can be used for document classification. When both the input and output are sequences, these nets can classify videos frame by frame. If a time delay is introduced, the net can statistically forecast the demand in supply chain planning. Like we’ve seen with previous deep learning models, by stacking RNNs on top of each other, you can form a net capable of more complex output than a single RNN working alone.
+    \subsubsection{Vanishing Gradient issue}
+    Typically, an RNN is an extremely difficult net to train. Since these nets use backpropagation, we once again run into the problem of the vanishing gradient. Unfortunately, the vanishing gradient is exponentially worse for an RNN. The reason for this is that each time step is the equivalent of an entire layer in a feedforward network. So training an RNN for 100 time steps is like training a 100-layer feedforward net – this leads to exponentially small gradients and a decay of information through time.
+    \begin{figure}[h!]
+      \begin{center}
+        \includegraphics[width=0.8\linewidth]{img/vanishing-gradient.png}
+        \caption{Vanishing Gradient.}
+        \label{fig:snn}
+      \end{center}
+    \end{figure}
+    
+    \paragraph{}
+    There are several ways to address this problem - the most popular of which is gating. Gating is a technique that helps the net decide when to forget the current input, and when to remember it for future time steps. The most popular gating types today are GRU and LSTM. Besides gating, there are also a few other techniques like gradient clipping, steeper gates, and better optimizers.
+
+    \begin{figure}[h!]
+      \begin{center}
+        \includegraphics[width=0.8\linewidth]{img/rnn-gpu-cpu.png}
+        \caption{LSTM GPU vs CPU.}
+        \label{fig:snn}
+      \end{center}
+    \end{figure}
+    \subsubsection{Gpu vs Cpu}
+    When it comes to training a recurrent net, GPUs are an obvious choice over an ordinary CPU. This was validated by a research team at Indico, which uses these nets on text processing tasks like sentiment analysis and helpfulness extraction. The team found that GPUs were able to train the nets 250 times faster! That’s the difference between one day of training, and over eight months! So under what circumstances would you use a recurrent net over a feedforward net? We know that a feedforward net outputs one value, which in many cases was a class or a prediction. A recurrent net is suited for time series data, where an output can be the next value in a sequence, or the next several values. So the answer depends on whether the application calls for classification, regression, or forecasting.
+
+    \newpage
+    \section{Time series Data}
+    \paragraph{}
+    In order of increasing complexity we can think of time series data as a sequence of data points that measure the same thing over an ordered period of time. Another way of thinking about it, is that it's a series of numeric values, each with its own timestamp defined by a name and a set of label dimensions.
+    \paragraph{} 
+    We're seeing this type of data set become more common, in fact if we look at developer usage patterns in the past two years time series databases have emerged as the fastest growing category of databases.
+    
+    
+    
+    \paragraph{}
+    Time series forecasting is performed in nearly every organization that works with quantifiable data. Retail stores forecast sales. Energy companies forecast reserves, production, demand, and prices. Educational institutions forecast enrollment. Goverments forecast tax receipts and spending. International financial organizations forecast inflation and economic activity. The list is long but the point is short - forecasting is a fundamental analytic process in every organization. The purpose of this example is to help with visualization of a Time Series Graph of an airline Company.
+    \begin{figure}[h!]
+      \begin{center}
+        \includegraphics[width=0.8\linewidth]{img/unnamed-chunk-6-1.png}
+        \caption{TimeSeries Data Example.}
+        \label{fig:snn}
+      \end{center}
+    \end{figure}
+
+
+
+    \paragraph{} 
+    Well smart homes monitor data points like the temperature, number of people in the house and energy usage, Amazon monitors how its many assets are moving across the world with a fine-grained level of precision and efficiency that makes same-day delivery possible. All of these applications have one thing in common, they rely on a form of data that measures how things change over time. 
+    \paragraph{}
+    Usually time series data sets have three commonalities. The data that does arrive is recorded as a new entry, it arrives in time order and time is a primary axis. These data sets are generally append-only the data that has been reported doesn't change. Since it was recorded at some point in the past, time series data sets are different than just having a time field as a column in a data set. In that, when we collect a new data point for time series data we have to create a brand new row for it. Only by doing this will we be able to track all changes to a system over time. Recording data points over a series of time allows us to analyze how something has changed in the past monitor, how is changing in the presence and even predict how it could change in the future.
+    \paragraph{} 
+    Recurrent neural networks are able to learn how to make predictions in sequences of data and a variance of recurrent networks called long-short term memory networks are able to learn from even longer sequences of data. We can treat our data set as a supervised problem if we'd like and use an LS TM network to predict our target.
+
+
+\end{document}
