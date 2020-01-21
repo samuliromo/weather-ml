@@ -6,12 +6,11 @@ from sklearn import preprocessing
 from numpy import save
 
 #read data and remove unnecessary variables
-
 df = pd.read_csv('minute_weather.csv')
 df.rename(columns={'hpwren_timestamp': 'time'}, inplace=True)
 df.drop(['rowID', 'avg_wind_direction', 'max_wind_direction', 'min_wind_direction', 'max_wind_speed', 'min_wind_speed','rain_duration'], axis=1, inplace=True)
 df.dropna(inplace=True)
-df['time'] = pd.to_datetime(df['time'])
+df['time'] = pd.to_datetime(df['time']) #set the index to datetime
 df.set_index('time', inplace=True)
 
 
@@ -28,16 +27,17 @@ plt.show()
 #graph temperature over time
 ax = plt.gca()
 df.plot(kind='line',y='air_temp',ax=ax)
-#plt.show()
+plt.show()
 
 #============================================================
 
-SEQ_LEN = 60
-PREDICT_PERIOD_LEN = 60
-TARGET_VAR = 'air_temp'
-TARGET_INDEX = df.columns.get_loc(TARGET_VAR)
+SEQ_LEN = 60 #set the length of the PAST sequence we want to use for prediction
+PREDICT_PERIOD_LEN = 60 #set the length of the FUTURE sequence we want to gain some information about by predicting
+TARGET_VAR = 'air_temp' #the target variable the positive or negative change of which we try to predict
+TARGET_INDEX = df.columns.get_loc(TARGET_VAR) #index of the target variable in the main data frame
 
 
+#assign the labels for sequences. 0 for negative change, 1 for positive
 def classify(current_seq, future_seq):
   data = []
   for i in current_seq:
@@ -48,6 +48,7 @@ def classify(current_seq, future_seq):
     return 0
 
 
+#split the main sequence into "past" and "future" sequences, the length of which are determined separately
 def make_sequences(data):
   print('Creating sequences.....')
   sequential_data = []
@@ -73,6 +74,7 @@ def make_sequences(data):
   return sequential_data
 
 
+#balance the data to have an equal amount of both classes, and shuffle it
 def balance(data):
   class_0 = []
   class_1 = []
@@ -100,6 +102,7 @@ def balance(data):
   return np.array(X), y
 
 
+#normalize the data using min-max scaling
 def normalize(data):
   normalized = np.reshape(data, ((len(data)*SEQ_LEN), 5))
   scaler = preprocessing.MinMaxScaler()
@@ -109,6 +112,7 @@ def normalize(data):
   return normalized
 
 
+#combine the whole pipeline into a single step, save the array and print some quick statistics
 def preprocess_and_save(data, filename):
   df = make_sequences(data)
   x, y = balance(df)
@@ -119,8 +123,10 @@ def preprocess_and_save(data, filename):
   print(f"negatives: {y.count(0)}, positives: {y.count(1)}")
 
 #===============================================================================
+#Split the main dataframe into training/validation/testing data with a ratio of 60/20/20
 train, val, test = np.split(df.sample(frac=1), [int(.6*len(df)), int(.8*len(df))])
 
+#complete pipeline for train, validation and test datasets
 preprocess_and_save(train, 'train')
 preprocess_and_save(val, 'val')
 preprocess_and_save(test, 'test')
