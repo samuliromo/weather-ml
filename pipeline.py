@@ -75,6 +75,7 @@ def make_sequences(data):
 
 
 #balance the data to have an equal amount of both classes, and shuffle it
+#method taken from: https://pythonprogramming.net/balancing-rnn-data-deep-learning-python-tensorflow-keras/
 def balance(data):
   class_0 = []
   class_1 = []
@@ -114,6 +115,7 @@ def normalize(data):
 
 #combine the whole pipeline into a single step, save the array and print some quick statistics
 def preprocess_and_save(data, filename):
+  filename = f'past-{SEQ_LEN}-future-{PREDICT_PERIOD_LEN}-{TARGET_VAR}/'
   df = make_sequences(data)
   x, y = balance(df)
   x = normalize(x)
